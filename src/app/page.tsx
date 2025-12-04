@@ -146,7 +146,7 @@ export default function HomePage() {
           {/* Logo/Icon */}
           <div className="hero-cta mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full glass">
             <Sparkles className="w-4 h-4 text-wine-primary" />
-            <span className="text-wine-cream/80 text-sm">Premium Wine Mixing Experience</span>
+            <span className="text-wine-cream/80 text-sm">Premium Cocktail & Mocktail Mixing Experience</span>
           </div>
 
           {/* Main Title */}

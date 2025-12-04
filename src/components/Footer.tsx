@@ -129,7 +129,7 @@ export default function Footer() {
             © {new Date().getFullYear()} Añuri. All rights reserved.
           </p>
           <p className="text-wine-cream/40 text-sm flex items-center gap-1">
-            Made with <Heart className="w-4 h-4 text-wine-primary" /> for wine lovers
+            Made with <Heart className="w-4 h-4 text-wine-primary" /> for cocktail lovers
           </p>
         </div>
       </div>
