@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { Mail, Phone, MapPin, Send, Instagram, MessageCircle, Calendar, Users, CheckCircle } from 'lucide-react'
 
 const eventTypes = [
@@ -14,7 +13,6 @@ const eventTypes = [
 ]
 
 export default function ContactPage() {
-  const searchParams = useSearchParams()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,14 +30,17 @@ export default function ContactPage() {
 
   // Load savedMix from URL params (from Order button on mix builder)
   useEffect(() => {
-    const savedMixParam = searchParams.get('savedMix')
+    if (typeof window === 'undefined') return
+
+    const sp = new URLSearchParams(window.location.search)
+    const savedMixParam = sp.get('savedMix')
     if (savedMixParam) {
       setFormData(prev => ({
         ...prev,
-        savedMix: decodeURIComponent(savedMixParam)
+        savedMix: savedMixParam
       }))
     }
-  }, [searchParams])
+  }, [])
 
   const todayMin = (() => {
     const now = new Date()

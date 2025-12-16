@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import gsap from 'gsap'
 import { Wine, Trash2, Share2, Save, Send, Sparkles, X, Check } from 'lucide-react'
 
@@ -41,7 +41,6 @@ const allIngredients: Ingredient[] = [
 ]
 
 export default function IngredientsPage() {
-  const searchParams = useSearchParams()
   const router = useRouter()
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>([])
   const [drinkName, setDrinkName] = useState('')
@@ -52,11 +51,14 @@ export default function IngredientsPage() {
 
   // Load recipe from URL params on mount
   useEffect(() => {
-    const recipeName = searchParams.get('recipe')
-    const ingredientIds = searchParams.get('ingredients')
+    if (typeof window === 'undefined') return
+
+    const sp = new URLSearchParams(window.location.search)
+    const recipeName = sp.get('recipe')
+    const ingredientIds = sp.get('ingredients')
     
     if (recipeName) {
-      setDrinkName(decodeURIComponent(recipeName))
+      setDrinkName(recipeName)
     }
     
     if (ingredientIds) {
@@ -66,7 +68,7 @@ export default function IngredientsPage() {
         setSelectedIngredients(preselected)
       }
     }
-  }, [searchParams])
+  }, [])
 
   const totalCalories = selectedIngredients.reduce((sum, ing) => sum + ing.calories, 0)
   const fillPercentage = Math.min((totalCalories / 300) * 100, 100)
