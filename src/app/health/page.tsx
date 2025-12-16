@@ -78,9 +78,24 @@ export default function HealthPage() {
 
   const calculateBMI = () => {
     const w = parseFloat(weight)
-    const h = parseFloat(height) / 100 // Convert cm to m
-    
-    if (!w || !h || h === 0) return
+    const hRaw = parseFloat(height)
+
+    if (!Number.isFinite(w) || !Number.isFinite(hRaw)) {
+      setBmiResult(null)
+      return
+    }
+
+    if (w <= 0 || hRaw <= 0) {
+      setBmiResult(null)
+      return
+    }
+
+    const h = hRaw <= 3 ? hRaw : hRaw / 100
+
+    if (h <= 0.5 || h >= 2.5) {
+      setBmiResult(null)
+      return
+    }
 
     const bmi = w / (h * h)
     let category = ''
@@ -281,12 +296,12 @@ export default function HealthPage() {
 
               {/* Height */}
               <div>
-                <label className="text-wine-cream/80 text-sm block mb-2">Height (cm)</label>
+                <label className="text-wine-cream/80 text-sm block mb-2">Height (cm or m)</label>
                 <input
                   type="number"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
-                  placeholder="Enter your height"
+                  placeholder="e.g. 176 or 1.76"
                   className="w-full bg-wine-accent/20 border border-wine-accent/30 rounded-glass px-4 py-3 text-wine-cream placeholder:text-wine-cream/40 focus:outline-none focus:border-wine-primary transition-colors"
                 />
               </div>

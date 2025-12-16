@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger)
 const wineFacts = [
   {
     front: "Did you know?",
-    back: "Many bars now offer creative non-alcoholic versions of popular cocktails, using botanicals and flavours that mimic the original experience.",
+    back: "Many bars now serve creative non-alcoholic versions of popular cocktails, using botanicals and flavours for a classic feel.",
     icon: <Sparkles className="w-10 h-10 text-wine-primary" />,
   },
   {
@@ -222,6 +222,10 @@ export default function HomePage() {
 
         {/* Marquee extends full width */}
         <div className="animate-in">
+          <div className="mb-3 text-center text-wine-cream/40 text-xs">
+            <span className="sm:hidden">Tap to pause me</span>
+            <span className="hidden sm:inline">Click to pause me</span>
+          </div>
           <WineFactsMarquee facts={wineFacts} />
         </div>
 

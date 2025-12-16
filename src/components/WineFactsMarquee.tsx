@@ -96,11 +96,15 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
               `} />
               
               {/* Always-visible content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-5 sm:p-6 text-center">
-                <span className="text-3xl mb-3">{fact.icon}</span>
-                <h3 className="font-serif text-lg sm:text-xl text-wine-cream">{fact.front}</h3>
-                <div className="mt-3 mb-3 w-12 h-0.5 bg-wine-primary/50 rounded-full" />
-                <p className="text-wine-cream/90 leading-relaxed text-sm">{fact.back}</p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-5 text-center">
+                <span className="mb-2 flex items-center justify-center [&_svg]:w-8 [&_svg]:h-8 sm:[&_svg]:w-10 sm:[&_svg]:h-10">
+                  {fact.icon}
+                </span>
+                <h3 className="font-serif text-base sm:text-lg text-wine-cream">{fact.front}</h3>
+                <div className="mt-2 mb-2 w-12 h-0.5 bg-wine-primary/50 rounded-full" />
+                <p className="text-wine-cream/90 leading-snug text-xs sm:text-sm overflow-hidden [display:-webkit-box] [-webkit-line-clamp:5] sm:[-webkit-line-clamp:6] [-webkit-box-orient:vertical]">
+                  {fact.back}
+                </p>
               </div>
 
               {/* Hover glow effect */}

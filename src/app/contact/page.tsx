@@ -26,6 +26,15 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [dateError, setDateError] = useState<string | null>(null)
+
+  const todayMin = (() => {
+    const now = new Date()
+    const yyyy = now.getFullYear()
+    const mm = String(now.getMonth() + 1).padStart(2, '0')
+    const dd = String(now.getDate()).padStart(2, '0')
+    return `${yyyy}-${mm}-${dd}`
+  })()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -71,6 +80,35 @@ export default function ContactPage() {
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    if (e.target.name === 'eventDate') {
+      const value = e.target.value
+      if (!value) {
+        setDateError(null)
+      } else {
+        const selected = new Date(`${value}T00:00:00`)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        if (selected < today) {
+          setDateError('Please choose a future date.')
+          setFormData(prev => ({
+            ...prev,
+            eventDate: ''
+          }))
+          return
+        }
+        if (selected.getDay() === 0) {
+          setDateError('We do not work on Sundays. Please choose another date.')
+          setFormData(prev => ({
+            ...prev,
+            eventDate: ''
+          }))
+          return
+        }
+        setDateError(null)
+      }
+    }
+
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
@@ -273,24 +311,10 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Event Date */}
-                <div>
-                  <label className="text-wine-cream/80 text-sm block mb-2">
-                    Event Date
-                  </label>
-                  <input
-                    type="date"
-                    name="eventDate"
-                    value={formData.eventDate}
-                    onChange={handleChange}
-                    className="w-full bg-wine-accent/20 border border-wine-accent/30 rounded-glass px-4 py-3 text-wine-cream focus:outline-none focus:border-wine-primary transition-colors"
-                  />
-                </div>
-
                 {/* Guest Count */}
                 <div>
                   <label className="text-wine-cream/80 text-sm block mb-2">
-                    Number of Guests
+                    Guest Count
                   </label>
                   <div className="relative">
                     <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-wine-cream/40" />
@@ -305,13 +329,30 @@ export default function ContactPage() {
                     />
                   </div>
                 </div>
+
+                {/* Event Date */}
+                <div>
+                  <label className="text-wine-cream/80 text-sm block mb-2">Event Date</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-wine-cream/40" />
+                    <input
+                      type="date"
+                      name="eventDate"
+                      value={formData.eventDate}
+                      onChange={handleChange}
+                      min={todayMin}
+                      className="w-full bg-wine-accent/20 border border-wine-accent/30 rounded-glass pl-12 pr-4 py-3 text-wine-cream focus:outline-none focus:border-wine-primary transition-colors"
+                    />
+                  </div>
+                  {dateError && (
+                    <p className="mt-2 text-xs text-red-300">{dateError}</p>
+                  )}
+                </div>
               </div>
 
               {/* Message */}
               <div className="mt-6">
-                <label className="text-wine-cream/80 text-sm block mb-2">
-                  Message
-                </label>
+                <label className="text-wine-cream/80 text-sm block mb-2">Message</label>
                 <textarea
                   name="message"
                   value={formData.message}
@@ -324,9 +365,7 @@ export default function ContactPage() {
 
               {/* Saved Mix */}
               <div className="mt-6">
-                <label className="text-wine-cream/80 text-sm block mb-2">
-                  Attach Saved Mix (Optional)
-                </label>
+                <label className="text-wine-cream/80 text-sm block mb-2">Attach Saved Mix (Optional)</label>
                 <input
                   type="text"
                   name="savedMix"
