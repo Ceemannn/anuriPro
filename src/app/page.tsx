@@ -186,7 +186,7 @@ export default function HomePage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="hero-scroll absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <div className="hero-scroll absolute bottom-10 left-0 w-full flex flex-col items-center gap-2 animate-bounce sm:left-1/2 sm:w-auto sm:-translate-x-1/2">
           <span className="text-wine-cream/50 text-xs uppercase tracking-widest">Scroll</span>
           <ChevronDown className="w-5 h-5 text-wine-cream/50" />
         </div>

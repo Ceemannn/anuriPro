@@ -16,6 +16,7 @@ interface WineFactsMarqueeProps {
 export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
   const [isPaused, setIsPaused] = useState(false)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
   const animationRef = useRef<gsap.core.Tween | null>(null)
 
@@ -68,6 +69,14 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
     setHoveredIndex(null)
   }
 
+  const handleCardToggle = (index: number) => {
+    setActiveIndex(prev => {
+      const next = prev === index ? null : index
+      setIsPaused(next !== null)
+      return next
+    })
+  }
+
   return (
     <div className="relative overflow-hidden py-4">
       {/* Gradient fade edges */}
@@ -82,45 +91,54 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
       >
         {duplicatedFacts.map((fact, index) => {
           const isHovered = hoveredIndex === index
+          const isActive = activeIndex === index
+          const isOpen = isHovered || isActive
           
           return (
             <div
               key={index}
               onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={handleMouseLeave}
+              onPointerDown={(e) => {
+                if (e.pointerType !== 'mouse') {
+                  e.preventDefault()
+                  handleCardToggle(index)
+                }
+              }}
               className={`
-                relative flex-shrink-0 w-72 h-56 rounded-2xl overflow-hidden cursor-pointer
+                relative flex-shrink-0 w-64 h-52 sm:w-72 sm:h-56 rounded-2xl overflow-hidden cursor-pointer
+                select-none touch-manipulation
                 transition-all duration-300 ease-out
-                ${isHovered ? 'scale-105 shadow-wine z-20' : 'scale-100'}
+                ${isOpen ? 'scale-105 shadow-wine z-20' : 'scale-100'}
               `}
             >
               {/* Card background */}
               <div className={`
                 absolute inset-0 glass
                 transition-all duration-300
-                ${isHovered ? 'bg-wine-primary/20' : ''}
+                ${isOpen ? 'bg-wine-primary/20' : ''}
               `} />
               
               {/* Front content (visible when not hovered) */}
               <div className={`
-                absolute inset-0 flex flex-col items-center justify-center p-6 text-center
+                absolute inset-0 flex flex-col items-center justify-center p-5 sm:p-6 text-center
                 transition-all duration-300
-                ${isHovered ? 'opacity-0 transform -translate-y-4' : 'opacity-100 transform translate-y-0'}
+                ${isOpen ? 'opacity-0 transform -translate-y-4' : 'opacity-100 transform translate-y-0'}
               `}>
                 <span className="text-5xl mb-4 transition-transform duration-300" style={{
-                  transform: isHovered ? 'scale(1.2) rotate(12deg)' : 'scale(1) rotate(0deg)'
+                  transform: isOpen ? 'scale(1.2) rotate(12deg)' : 'scale(1) rotate(0deg)'
                 }}>
                   {fact.icon}
                 </span>
-                <h3 className="font-serif text-xl text-wine-cream">{fact.front}</h3>
+                <h3 className="font-serif text-lg sm:text-xl text-wine-cream">{fact.front}</h3>
                 <div className="mt-3 w-12 h-0.5 bg-wine-primary/50 rounded-full" />
               </div>
               
               {/* Back content (visible when hovered) */}
               <div className={`
-                absolute inset-0 flex flex-col items-center justify-center p-6 text-center
+                absolute inset-0 flex flex-col items-center justify-center p-5 sm:p-6 text-center
                 transition-all duration-300
-                ${isHovered ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}
+                ${isOpen ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'}
               `}>
                 <span className="text-3xl mb-3">{fact.icon}</span>
                 <p className="text-wine-cream/90 leading-relaxed text-sm">{fact.back}</p>
@@ -130,7 +148,7 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
               <div className={`
                 absolute inset-0 rounded-2xl pointer-events-none
                 transition-opacity duration-300
-                ${isHovered ? 'opacity-100' : 'opacity-0'}
+                ${isOpen ? 'opacity-100' : 'opacity-0'}
               `} style={{
                 boxShadow: 'inset 0 0 30px rgba(201, 99, 43, 0.3)'
               }} />
@@ -139,7 +157,7 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
               <div className={`
                 absolute top-3 right-3 w-2 h-2 rounded-full bg-wine-primary
                 transition-all duration-300
-                ${isHovered ? 'scale-150 opacity-100' : 'scale-100 opacity-50'}
+                ${isOpen ? 'scale-150 opacity-100' : 'scale-100 opacity-50'}
               `} />
             </div>
           )
@@ -150,7 +168,7 @@ export default function WineFactsMarquee({ facts }: WineFactsMarqueeProps) {
       {isPaused && (
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-wine-cream/40 text-xs flex items-center gap-2">
           <span className="w-2 h-2 bg-wine-primary rounded-full animate-pulse" />
-          Paused — hover to read
+          Paused — tap or hover to read
         </div>
       )}
     </div>
