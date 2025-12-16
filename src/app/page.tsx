@@ -14,8 +14,8 @@ gsap.registerPlugin(ScrollTrigger)
 const wineFacts = [
   {
     front: "Did you know?",
-    back: "Red wine contains antioxidants that may benefit heart health.",
-    icon: <Wine className="w-10 h-10 text-wine-primary" />,
+    back: "Many bars now offer creative non-alcoholic versions of popular cocktails, using botanicals and flavours that mimic the original experience.",
+    icon: <Sparkles className="w-10 h-10 text-wine-primary" />,
   },
   {
     front: "Fun Fact",
@@ -24,13 +24,23 @@ const wineFacts = [
   },
   {
     front: "History",
-    back: "The world's oldest wine dates back to 7000 BC!",
+    back: "The word 'cocktail' first appeared in print in the early 1800s — and classics like the Old Fashioned are still popular today.",
     icon: <Calendar className="w-10 h-10 text-wine-primary" />,
   },
   {
     front: "Wellness",
-    back: "A glass of wine contains about 125 calories — enjoy mindfully!",
+    back: "Lower-sugar mixers (soda water, citrus, unsweetened tea) can keep cocktails and mocktails lighter while still tasting vibrant.",
     icon: <Star className="w-10 h-10 text-wine-primary" />,
+  },
+  {
+    front: "Hydration",
+    back: "Alcohol can be dehydrating — alternating with water (or choosing a mocktail) can help you feel better the next day.",
+    icon: <Users className="w-10 h-10 text-wine-primary" />,
+  },
+  {
+    front: "Balance",
+    back: "Great drinks rely on balance: sweet, sour, bitter, and aromatic elements working together — not just more alcohol or more syrup.",
+    icon: <Wine className="w-10 h-10 text-wine-primary" />,
   },
 ]
 
@@ -205,7 +215,7 @@ export default function HomePage() {
               Did You Know?
             </h2>
             <p className="text-wine-cream/60">
-              Hover over the cards to discover fascinating wine facts
+              Hover over the cards to discover fascinating Mocktail & Cocktail facts
             </p>
           </div>
         </div>
