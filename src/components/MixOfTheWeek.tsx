@@ -1,12 +1,14 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { Star, Flame } from 'lucide-react'
 
 const featuredMix = {
   name: "Sunset Boulevard",
   description: "A refreshing blend of rosé, fresh strawberries, mint, and a hint of elderflower. Perfect for summer evenings.",
   ingredients: ["Rosé Wine", "Strawberries", "Fresh Mint", "Elderflower Syrup", "Sparkling Water"],
+  ingredientIds: ["rose", "strawberry", "mint", "syrup", "soda"],
   calories: 145,
   rating: 4.8,
   type: "Mocktail"
@@ -89,9 +91,12 @@ export default function MixOfTheWeek() {
               <span className="text-wine-cream/60 text-xs uppercase">Calories</span>
               <p className="text-wine-primary text-2xl font-serif">{featuredMix.calories}</p>
             </div>
-            <button className="wine-btn flex-1">
+            <Link 
+              href={`/ingredients?recipe=${encodeURIComponent(featuredMix.name)}&ingredients=${featuredMix.ingredientIds.join(',')}`}
+              className="wine-btn flex-1 text-center"
+            >
               Try This Recipe
-            </button>
+            </Link>
           </div>
         </div>
       </div>

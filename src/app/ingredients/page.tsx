@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import gsap from 'gsap'
-import { Wine, Trash2, Share2, Save, Send, Sparkles, X } from 'lucide-react'
+import { Wine, Trash2, Share2, Save, Send, Sparkles, X, Check } from 'lucide-react'
 
 type Ingredient = {
   id: string
@@ -40,11 +41,32 @@ const allIngredients: Ingredient[] = [
 ]
 
 export default function IngredientsPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>([])
   const [drinkName, setDrinkName] = useState('')
   const [activeCategory, setActiveCategory] = useState<'all' | 'base' | 'fruit' | 'addon'>('all')
   const [showSaveModal, setShowSaveModal] = useState(false)
+  const [copied, setCopied] = useState(false)
   const mixingGlassRef = useRef<HTMLDivElement>(null)
+
+  // Load recipe from URL params on mount
+  useEffect(() => {
+    const recipeName = searchParams.get('recipe')
+    const ingredientIds = searchParams.get('ingredients')
+    
+    if (recipeName) {
+      setDrinkName(decodeURIComponent(recipeName))
+    }
+    
+    if (ingredientIds) {
+      const ids = ingredientIds.split(',')
+      const preselected = allIngredients.filter(ing => ids.includes(ing.id))
+      if (preselected.length > 0) {
+        setSelectedIngredients(preselected)
+      }
+    }
+  }, [searchParams])
 
   const totalCalories = selectedIngredients.reduce((sum, ing) => sum + ing.calories, 0)
   const fillPercentage = Math.min((totalCalories / 300) * 100, 100)
@@ -295,11 +317,27 @@ export default function IngredientsPage() {
                     Save My Mix
                   </button>
                   <div className="grid grid-cols-2 gap-2">
-                    <button className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm">
-                      <Share2 className="w-4 h-4" />
-                      Share
+                    <button 
+                      onClick={() => {
+                        const ingredientIds = selectedIngredients.map(i => i.id).join(',')
+                        const shareUrl = `${window.location.origin}/ingredients?recipe=${encodeURIComponent(drinkName || 'My Mix')}&ingredients=${ingredientIds}`
+                        navigator.clipboard.writeText(shareUrl)
+                        setCopied(true)
+                        setTimeout(() => setCopied(false), 2000)
+                      }}
+                      className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
+                      {copied ? 'Copied!' : 'Share'}
                     </button>
-                    <button className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm">
+                    <button 
+                      onClick={() => {
+                        const ingredientNames = selectedIngredients.map(i => i.name).join(', ')
+                        const mixInfo = `${drinkName || 'Custom Mix'} (${ingredientNames})`
+                        router.push(`/contact?savedMix=${encodeURIComponent(mixInfo)}`)
+                      }}
+                      className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm"
+                    >
                       <Send className="w-4 h-4" />
                       Order
                     </button>
