@@ -57,7 +57,7 @@ const packages = [
     name: 'Basic',
     price: '£3.3/drink',
     description: 'Ideal for small parties, booklaunch, private events',
-    features: ['£99 (including VAT)' ,'1-30 guests', '1 bartender', 'No welcome wine', 'Self service station', '2 Anuri signature mocktails and classics', 'No custom mocktail creation', 'Fresh garnishes', 'No unlimited drinks'],
+    features: ['£290 (including VAT)' ,'1-30 guests', '1 bartender', 'No welcome wine', 'Self service station', '2 Anuri signature mocktails and classics', 'No custom mocktail creation', 'Fresh garnishes', 'No unlimited drinks'],
     popular: false,
   },
   {

@@ -11,15 +11,25 @@ export default function CustomCursor() {
     const cursor = cursorRef.current
     if (!cursor) return
 
-    const onMouseMove = (e: MouseEvent) => {
-      // Use gsap.set for immediate positioning - no lag
-      gsap.set(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-      })
+    const setX = gsap.quickSetter(cursor, 'x', 'px')
+    const setY = gsap.quickSetter(cursor, 'y', 'px')
+    let rafId = 0
+    let latestX = 0
+    let latestY = 0
+
+    const applyPos = () => {
+      rafId = 0
+      setX(latestX)
+      setY(latestY)
     }
 
-    const onMouseDown = (e: MouseEvent) => {
+    const onPointerMove = (e: PointerEvent) => {
+      latestX = e.clientX
+      latestY = e.clientY
+      if (!rafId) rafId = window.requestAnimationFrame(applyPos)
+    }
+
+    const onPointerDown = (e: PointerEvent) => {
       const newSplash = { id: Date.now(), x: e.clientX, y: e.clientY }
       setSplashes(prev => [...prev, newSplash])
       
@@ -33,21 +43,22 @@ export default function CustomCursor() {
       }, 400)
     }
 
-    const onMouseUp = () => {
+    const onPointerUp = () => {
       gsap.to(cursor, {
         scale: 1,
         duration: 0.1,
       })
     }
 
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mouseup', onMouseUp)
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
+    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointerup', onPointerUp)
 
     return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointerup', onPointerUp)
+      if (rafId) window.cancelAnimationFrame(rafId)
     }
   }, [])
 

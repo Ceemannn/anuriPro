@@ -18,6 +18,8 @@ export default function WineBubbles() {
     const container = containerRef.current
     if (!container) return
 
+    const bubbleEls: HTMLDivElement[] = []
+
     const bubbles: Bubble[] = Array.from({ length: 30 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
@@ -36,10 +38,11 @@ export default function WineBubbles() {
         bottom: -${bubble.size}px;
       `
       container.appendChild(el)
+      bubbleEls.push(el)
 
       gsap.to(el, {
         y: -window.innerHeight - bubble.size * 2,
-        x: `+=${Math.sin(bubble.id) * 50}`,
+        xPercent: Math.sin(bubble.id) * 50,
         opacity: 0,
         duration: bubble.duration,
         delay: bubble.delay,
@@ -47,7 +50,7 @@ export default function WineBubbles() {
         ease: 'none',
         onRepeat: () => {
           gsap.set(el, {
-            x: 0,
+            xPercent: 0,
             y: 0,
             opacity: 0.5,
             left: `${Math.random() * 100}%`,
@@ -57,22 +60,38 @@ export default function WineBubbles() {
     })
 
     // Parallax effect on mouse move
-    const handleMouseMove = (e: MouseEvent) => {
-      const bubbleEls = container.querySelectorAll('.wine-bubble')
-      bubbleEls.forEach((bubble, i) => {
-        const speed = (i % 3 + 1) * 0.02
-        gsap.to(bubble, {
-          x: (e.clientX - window.innerWidth / 2) * speed,
+    const parallaxSetters = bubbleEls.map((bubble, i) => {
+      const speed = (i % 3 + 1) * 0.02
+      return {
+        speed,
+        setX: gsap.quickTo(bubble, 'x', {
           duration: 0.5,
           ease: 'power2.out',
-        })
-      })
+        }),
+      }
+    })
+
+    let rafId = 0
+    let latestDeltaX = 0
+
+    const applyParallax = () => {
+      rafId = 0
+      for (const { speed, setX } of parallaxSetters) {
+        setX(latestDeltaX * speed)
+      }
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
+    const handlePointerMove = (e: PointerEvent) => {
+      latestDeltaX = e.clientX - window.innerWidth / 2
+      if (!rafId) rafId = window.requestAnimationFrame(applyParallax)
+    }
+
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('pointermove', handlePointerMove)
+      if (rafId) window.cancelAnimationFrame(rafId)
+      gsap.killTweensOf(bubbleEls)
       container.innerHTML = ''
     }
   }, [])
