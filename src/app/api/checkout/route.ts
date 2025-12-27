@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+// Initialize Stripe lazily to avoid build-time errors
+const getStripe = () => {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
 // Package pricing configuration (amounts in pence)
 const packages = {
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (data.packageType && packages[data.packageType]) {
       const pkg = packages[data.packageType]
       
-      const session = await stripe.checkout.sessions.create({
+      const session = await getStripe().checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [
           {
@@ -77,7 +80,7 @@ export async function POST(request: NextRequest) {
     const ingredientsList = data.ingredients.join(', ')
     const description = `Custom Mix: ${data.mixName} - Ingredients: ${ingredientsList} (${data.totalCalories} calories)`
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
@@ -126,7 +129,7 @@ export async function GET(request: NextRequest) {
 
     const pkg = packages[packageType]
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
