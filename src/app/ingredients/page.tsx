@@ -47,6 +47,7 @@ export default function IngredientsPage() {
   const [activeCategory, setActiveCategory] = useState<'all' | 'base' | 'fruit' | 'addon'>('all')
   const [showSaveModal, setShowSaveModal] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
   const mixingGlassRef = useRef<HTMLDivElement>(null)
 
   // Load recipe from URL params on mount
@@ -333,15 +334,40 @@ export default function IngredientsPage() {
                       {copied ? 'Copied!' : 'Share'}
                     </button>
                     <button 
-                      onClick={() => {
-                        const ingredientNames = selectedIngredients.map(i => i.name).join(', ')
-                        const mixInfo = `${drinkName || 'Custom Mix'} (${ingredientNames})`
-                        router.push(`/contact?savedMix=${encodeURIComponent(mixInfo)}`)
+                      onClick={async () => {
+                        setIsCheckingOut(true)
+                        try {
+                          const response = await fetch('/api/checkout', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                              mixName: drinkName || 'Custom Mix',
+                              ingredients: selectedIngredients.map(i => i.name),
+                              totalCalories: totalCalories,
+                            }),
+                          })
+                          
+                          const data = await response.json()
+                          
+                          if (data.url) {
+                            window.location.href = data.url
+                          } else {
+                            alert('Failed to create checkout session. Please try again.')
+                          }
+                        } catch (error) {
+                          console.error('Checkout error:', error)
+                          alert('Something went wrong. Please try again.')
+                        } finally {
+                          setIsCheckingOut(false)
+                        }
                       }}
-                      className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm"
+                      disabled={isCheckingOut}
+                      className="py-2 px-4 rounded-glass border border-wine-cream/20 text-wine-cream/70 hover:bg-wine-cream/5 transition-colors flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Send className="w-4 h-4" />
-                      Order
+                      {isCheckingOut ? 'Processing...' : 'Order'}
                     </button>
                   </div>
                 </div>
