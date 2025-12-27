@@ -1,22 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 import Link from 'next/link'
 import { CheckCircle, Wine, ArrowRight } from 'lucide-react'
 
-export default function OrderSuccessPage() {
-  const searchParams = useSearchParams()
-  const sessionId = searchParams.get('session_id')
-  const [isVerified, setIsVerified] = useState(false)
-
-  useEffect(() => {
-    // You can verify the session with Stripe here if needed
-    if (sessionId) {
-      setIsVerified(true)
-    }
-  }, [sessionId])
-
+function OrderSuccessContent() {
   return (
     <div className="pt-24 pb-20 px-6 min-h-screen flex items-center justify-center">
       <div className="container mx-auto max-w-2xl">
@@ -70,5 +58,25 @@ export default function OrderSuccessPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="pt-24 pb-20 px-6 min-h-screen flex items-center justify-center">
+        <div className="container mx-auto max-w-2xl">
+          <div className="glass p-12 text-center">
+            <div className="animate-pulse">
+              <div className="w-16 h-16 bg-wine-accent/20 rounded-full mx-auto mb-8" />
+              <div className="h-8 bg-wine-accent/20 rounded w-3/4 mx-auto mb-4" />
+              <div className="h-4 bg-wine-accent/20 rounded w-1/2 mx-auto" />
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <OrderSuccessContent />
+    </Suspense>
   )
 }
