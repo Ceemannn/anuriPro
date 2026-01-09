@@ -194,7 +194,7 @@ export async function POST(request: NextRequest) {
                         <li>2 Anuri signature mocktails</li>
                         <li>Fresh garnishes</li>
                       </ul>
-                      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://anurigroup.com'}/api/checkout?package=basic&email=${encodeURIComponent(data.email)}" style="display: inline-block; background: #631b23; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Select Basic</a>
+                      <a href="https://buy.stripe.com/test_7sY28s3CB6BH5Ci4yKeEo01" style="display: inline-block; background: #631b23; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Pay</a>
                     </div>
                   </td>
                   <!-- Standard Package -->
@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
                         <li>Welcome wine included</li>
                         <li>4 Anuri signature mocktails</li>
                       </ul>
-                      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://anurigroup.com'}/api/checkout?package=standard&email=${encodeURIComponent(data.email)}" style="display: inline-block; background: linear-gradient(135deg, #c9632b 0%, #631b23 100%); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Select Standard</a>
+                      <a href="https://buy.stripe.com/test_9B628sehf2lr4ye1myeEo02" style="display: inline-block; background: linear-gradient(135deg, #c9632b 0%, #631b23 100%); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Pay</a>
                     </div>
                   </td>
                   <!-- Premium Package -->
@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
                         <li>All Anuri signature mocktails</li>
                         <li>Custom mocktail creation</li>
                       </ul>
-                      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://anurigroup.com'}/api/checkout?package=premium&email=${encodeURIComponent(data.email)}" style="display: inline-block; background: #631b23; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Select Premium</a>
+                      <a href="https://buy.stripe.com/test_5kQcN6gpnd051m2ghseEo03" style="display: inline-block; background: #631b23; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 500;">Pay</a>
                     </div>
                   </td>
                 </tr>
